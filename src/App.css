@@ -1,27 +1,7 @@
 .app {
-  text-align: center;
 }
 
 .form-file {
-  margin-top: 45px;
-  display: inline-grid;
-  grid-row-gap: 5px;
-}
-
-.app-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.app-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  display: inline-flex;
+  flex-direction: column;
 }
