@@ -3,7 +3,7 @@ import './App.css';
 
 import Table from './Table/Table';
 
-const mockCSV = '11,12,13\n21,22,23\n31,32,33';
+const mockCSV = '11,12,13,14\n21,22,23,24\n31,32,33,34';
 const mockXLSX = '';
 
 class App extends Component {
