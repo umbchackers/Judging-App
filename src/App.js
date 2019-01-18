@@ -3,16 +3,14 @@ import './App.css';
 
 import Table from './Table/Table';
 
-const mockCSV = '11,12,13,14\n21,22,23,24\n31,32,33,34';
-
 class App extends Component {
   constructor(props) {
     super(props);
     this.fileInput = React.createRef();
     this.state = {
       error: '',
-      isReady: true,
-      tableData: mockCSV,
+      isReady: false,
+      tableData: '',
     };
   }
 
@@ -21,11 +19,18 @@ class App extends Component {
     event.preventDefault();
     let tableData = '';
     let file = event.target.files[0];
+    let reader = new FileReader();
 
+    reader.onload = event => {
+      tableData = reader.result;
+    };
 
-    this.setState({
-      tableData,
-    });
+    reader.onloadend = event => {
+      this.setState({
+        tableData,
+      });
+    }
+    reader.readAsText(file);
   }
 
   // Acts as a buffer between file upload and table generation

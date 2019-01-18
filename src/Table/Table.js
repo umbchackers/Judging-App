@@ -8,9 +8,9 @@ function renderTable(data) {
     let children = [];
     let columns = rows[i].split(',');
     for (let j = 0; j < columns.length; j++) {
-      children.push(<td>{columns[j]}</td>);
+      children.push(<td key={`${i}-${j}`}>{columns[j]}</td>);
     }
-    table.push(<tr>{children}</tr>);
+    table.push(<tr key={i}>{children}</tr>);
   }
   return table;
 }
