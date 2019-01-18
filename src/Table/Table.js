@@ -12,14 +12,15 @@ function renderTable(data) {
     }
     table.push(<tr>{children}</tr>);
   }
-
   return table;
 }
 
 function Table(props) {
   return (
     <table className="table">
-      {renderTable(props.data)}
+      <tbody>
+        {renderTable(props.data)}
+      </tbody>
     </table>
   );
 }
