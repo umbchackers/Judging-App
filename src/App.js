@@ -55,6 +55,7 @@ class App extends Component {
           <input type="file" accept=".csv" onChange={this.handleUpload}/>
           <input type="submit" value="Submit" />
         </form>
+        <p>{this.state.error}</p>
         {this.state.isReady ? <Table data={this.state.tableData} /> : null}
       </div>
     );
