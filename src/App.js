@@ -18,18 +18,34 @@ class App extends Component {
   handleUpload = (event) => {
     event.preventDefault();
     let tableData = '';
+    let error = '';
     let file = event.target.files[0];
     let reader = new FileReader();
+
+    // Force .csv extension
+    reader.onloadstart = event => {
+      if (file.name.split('.').pop() !== 'csv') {
+        error = 'Please upload a CSV file!';
+        reader.abort(); 
+      }
+    };
 
     reader.onload = event => {
       tableData = reader.result;
     };
 
+    reader.onerror = event => {
+      error = reader.error.message;
+      reader.abort();
+    };
+
     reader.onloadend = event => {
       this.setState({
         tableData,
+        error,
       });
-    }
+    };
+
     reader.readAsText(file);
   }
 
@@ -39,7 +55,7 @@ class App extends Component {
     let error = '';
     
     if (this.state.tableData === '') {
-      error = 'Please choose a non-empty file to upload!';
+      error = 'Please upload a non-empty file!';
     }
 
     this.setState({
@@ -53,10 +69,10 @@ class App extends Component {
       <div className="app">
         <form className="form-file" onSubmit={this.handleSubmit}>
           <input type="file" accept=".csv" onChange={this.handleUpload}/>
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Submit"/>
         </form>
         <p>{this.state.error}</p>
-        {this.state.isReady ? <Table data={this.state.tableData} /> : null}
+        {this.state.isReady ? <Table data={this.state.tableData}/> : null}
       </div>
     );
   }
