@@ -1,6 +1,6 @@
 # Judging App Backend
 
-Express backend for the Judging App. Meant to be paired with the frontend, see the client directory at [https://github.com/umbchackers/Judging-App]
+Express backend for the Judging App. Meant to be paired with the frontend, see the client directory at https://github.com/umbchackers/Judging-App
 
 Start by running `npm install` to install this package's dependencies
 
