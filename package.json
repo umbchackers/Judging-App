@@ -22,7 +22,7 @@
   "dependencies": {
     "express": "^4.16.4"
   },
-  "proxy": "https://localhost:5000/",
+  "proxy": "http://localhost:5000/",
   "devDependencies": {
     "concurrently": "^4.1.0",
     "nodemon": "^1.18.10"
