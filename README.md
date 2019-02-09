@@ -1,4 +1,4 @@
-#Judging App Backend
+# Judging App Backend
 
 Express backend for the Judging App. Meant to be paired with the frontend, see the client directory at [https://github.com/umbchackers/Judging-App]
 
