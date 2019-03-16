@@ -14,7 +14,7 @@ router.post('/login', (req, res) => {
   let body = 'fail'; 
 
   /* Some pseudo
-  status = spro.authUser(req.body) ? 200 : 401; // Probably need async
+  status = spro.isJudge(req.body) ? 200 : 401; // Probably need async
   body = status == 200 ? 'pass' : 'fail';
   */
 
