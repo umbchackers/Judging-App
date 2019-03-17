@@ -7,3 +7,7 @@ Start by running `npm install` to install this package's dependencies
 - To run both the back and frontend use `npm run both`
 - To run the backend individually use `npm run server`
 - To run the frontend individually use `npm run client`
+
+## Setup
+
+Working on this section... For now, contact me (Connor Markwell) for help getting your .env file set up with the proper info you'll need to authenticate with the Google Sheets API
