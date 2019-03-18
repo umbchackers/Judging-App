@@ -47,7 +47,7 @@ class App extends Component {
     };
 
     reader.readAsText(file);
-  }
+  };
 
   // Acts as a buffer between file upload and table generation
   handleSubmit = (event) => {
@@ -62,7 +62,7 @@ class App extends Component {
       error, 
       isReady: error === '',
     });
-  }
+  };
 
   render() {
     return (

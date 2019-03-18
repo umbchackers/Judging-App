@@ -14,4 +14,4 @@ app.use(bodyParser.urlencoded({extended: true}));
 // Handle different API versions
 app.use('/api/v1', apiv1);
 
-app.listen(port, () => console.log(`Listening on port ${port}!`));``
+app.listen(port, () => console.log(`Listening on port ${port}!`));
