@@ -35,13 +35,14 @@ async function isJudge(email) {
   sheets.spreadsheets.values.get({
     auth: jwtClient,
     spreadsheetId: process.env.SPR_ID,
-    range: 'judges!A'
+    range: 'judges!A:A'
   }, (error, response) => {
     if (error) {
       console.log(error);
     } else {
       let emails = response.data.values;
       for (let i = 0; i < emails.length; i++) {
+        console.log(emails[i]);
         if (emails[i].includes(email)) {
           return true;
         }

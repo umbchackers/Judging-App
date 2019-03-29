@@ -1,7 +1,10 @@
 const spro = require('../utility/spreadsheet-ops.js'); 
 
+/* TEST */
+spro.isJudge('test@gmail.com');
+
 const express = require('express');
-const router = express.router();
+const router = express.Router();
 
 // Quick little endpoint to test if API is operational
 router.get('/ping', (req, res) => {
