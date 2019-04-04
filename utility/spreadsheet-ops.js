@@ -26,29 +26,35 @@ function authorize() {
 /**
  * Validate email existance on judge sheet
  * @param {string} email - email to be validated
+ * @param {string} password - password to be validated
  */
-async function isJudge(email) {
+async function isJudge(email, password) {
+
+  if (password != process.env.JUDGE_PASS) {
+    return false;
+  }
 
   let authed = await authorize();
   if (!authed) { throw 'Sheets not authorized'; }
 
-  sheets.spreadsheets.values.get({
-    auth: jwtClient,
-    spreadsheetId: process.env.SPR_ID,
-    range: 'judges!A:A'
-  }, (error, response) => {
-    if (error) {
-      console.log(error);
-    } else {
-      let emails = response.data.values;
-      for (let i = 0; i < emails.length; i++) {
-        console.log(emails[i]);
-        if (emails[i].includes(email)) {
-          return true;
+  return new Promise((resolve, reject) => {
+    sheets.spreadsheets.values.get({
+      auth: jwtClient,
+      spreadsheetId: process.env.SPR_ID,
+      range: 'judges!A:A'
+    }, (error, response) => {
+      if (error) {
+        console.log(error);
+      } else {
+        let emails = response.data.values;
+        for (let i = 0; i < emails.length; i++) {
+          if (emails[i].includes(email)) {
+            resolve(true);
+          }
         }
+        resolve(false);
       }
-      return false;
-    }
+    });
   });
 }
 

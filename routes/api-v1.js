@@ -1,25 +1,15 @@
 const spro = require('../utility/spreadsheet-ops.js'); 
 
-/* TEST */
-spro.isJudge('test@gmail.com');
-
 const express = require('express');
 const router = express.Router();
 
-// Quick little endpoint to test if API is operational
-router.get('/ping', (req, res) => {
-  res.send({data: 'pong!'});
-});
-
 // Used by client to authenticate admins and judges
-router.post('/login', (req, res) => {
-  let status = 401;
-  let body = 'fail'; 
+router.post('/auth', async (req, res) => {
 
-  /* Some pseudo
-  status = spro.isJudge(req.body) ? 200 : 401; // Probably need async
-  body = status == 200 ? 'pass' : 'fail';
-  */
+  const authed = await spro.isJudge(req.body.username, req.body.password);
+  const status = authed ? 200 : 401;
+  const body = authed ? 'pass\n' : 'fail\n';
+  // Return access token, refresh token
 
   res.status(status).send(body);
 });

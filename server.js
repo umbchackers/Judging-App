@@ -11,6 +11,11 @@ const port = process.env.PORT || 5000;
 app.use(bodyParser.json());                       
 app.use(bodyParser.urlencoded({extended: true}));
 
+// Quick little endpoint to test if API is operational
+app.get('/ping', (req, res) => {
+  res.send({data: 'pong!'});
+});
+
 // Handle different API versions
 app.use('/api/v1', apiv1);
 
