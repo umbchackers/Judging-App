@@ -24,11 +24,11 @@ function authorize() {
 }
 
 /**
- * Validate email existance on judge sheet
- * @param {string} email - email to be validated
+ * Validate username existance on judge sheet
+ * @param {string} username - username to be validated
  * @param {string} password - password to be validated
  */
-async function isJudge(email, password) {
+async function isJudge(username, password) {
 
   if (password != process.env.JUDGE_PASS) {
     return false;
@@ -46,9 +46,9 @@ async function isJudge(email, password) {
       if (error) {
         console.log(error);
       } else {
-        let emails = response.data.values;
-        for (let i = 0; i < emails.length; i++) {
-          if (emails[i].includes(email)) {
+        let usernames = response.data.values;
+        for (let i = 0; i < usernames.length; i++) {
+          if (usernames[i].includes(username)) {
             resolve(true);
           }
         }
