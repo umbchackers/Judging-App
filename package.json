@@ -6,7 +6,7 @@
   "scripts": {
     "client": "cd client && npm run start",
     "server": "nodemon server.js",
-    "both": "concurrently --kill-others-on-fall \"npm run server\" \"npm run client\"",
+    "both": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,7 +26,6 @@
     "googleapis": "^38.0.0",
     "jsonwebtoken": "^8.5.1"
   },
-  "proxy": "http://localhost:5000/",
   "devDependencies": {
     "concurrently": "^4.1.0",
     "nodemon": "^1.18.10"

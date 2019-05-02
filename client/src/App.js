@@ -1,81 +1,38 @@
 import React, { Component } from 'react';
-import './App.css';
 
-import Table from './Table/Table';
+import Home from './Home/Home.js';
+import Login from './Login/Login.js';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.fileInput = React.createRef();
-    this.state = {
-      error: '',
-      isReady: false,
-      tableData: '',
+    this.state = { 
+      isAuthed: this.props.isAuthed
     };
   }
 
-  // Read contents from uploaded file
-  handleUpload = (event) => {
-    event.preventDefault();
-    let tableData = '';
-    let error = '';
-    let file = event.target.files[0];
-    let reader = new FileReader();
-
-    // Force .csv extension
-    reader.onloadstart = event => {
-      if (file.name.split('.').pop() !== 'csv') {
-        error = 'Please upload a CSV file!';
-        reader.abort(); 
-      }
-    };
-
-    reader.onload = event => {
-      tableData = reader.result;
-    };
-
-    reader.onerror = event => {
-      error = reader.error.message;
-      reader.abort();
-    };
-
-    reader.onloadend = event => {
-      this.setState({
-        tableData,
-        error,
-      });
-    };
-
-    reader.readAsText(file);
-  };
-
-  // Acts as a buffer between file upload and table generation
-  handleSubmit = (event) => {
-    event.preventDefault();
-    let error = '';
-    
-    if (this.state.tableData === '') {
-      error = 'Please upload a non-empty file!';
-    }
-
-    this.setState({
-      error, 
-      isReady: error === '',
+  handleAuth = (username, password) => {
+    fetch('/login', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({username, password})
+    }).then(res => {
+      this.setState({ isAuthed: res.ok });
     });
-  };
+  }
 
   render() {
+    const { isAuthed } = this.state;
     return (
-      <div className="app">
-        <form className="form-file" onSubmit={this.handleSubmit}>
-          <input type="file" accept=".csv" onChange={this.handleUpload}/>
-          <input type="submit" value="Submit"/>
-        </form>
-        <p>{this.state.error}</p>
-        {this.state.isReady ? <Table data={this.state.tableData}/> : null}
+      <div>
+        {isAuthed ? (
+          <Home /> 
+        ) : ( 
+          <Login handleAuth={this.handleAuth} />
+        )}
       </div>
     );
   }
 }
 
-export default App;
+export default App; 
