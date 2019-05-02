@@ -17,17 +17,33 @@ app.use(cookieParser());
 app.use(bodyParser.json());                       
 app.use(bodyParser.urlencoded({extended: true}));
 
+// Check authentication
+app.get('/user/me', (req, res) => {
+  const token = req.cookies.access_token;
+  let user;
+
+  try {
+    user = jwt.verify(token, process.env.JWT_SECRET); 
+  } catch (err) {
+    user = null;
+  }
+
+  res.status(user !== null ? 200 : 401)
+  .send({ auth: user !== null, user });
+});
+
 // Used by client to authenticate admins and judges
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const authed = await spro.isJudge(username, password);
+  const auth = await spro.isJudge(username, password);
 
-  if (authed) {
+  if (auth) {
     const token = jwt.sign({ username }, process.env.JWT_SECRET);
     res.cookie('access_token', token, {httpOnly: true}); 
   }
 
-  res.status(authed ? 200 : 401).send({ authed });
+  res.status(auth ? 200 : 401)
+  .send({ auth });
 });
 
 app.post('/logout', async (req, res) => {

@@ -7,8 +7,15 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      isAuthed: this.props.isAuthed
+      isAuthed: null
     };
+  }
+
+  componentDidMount() {
+    fetch('/user/me')
+    .then(response => {
+      this.setState({ isAuthed: response.ok });
+    });
   }
 
   handleAuth = (username, password) => {
@@ -16,13 +23,20 @@ class App extends Component {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({username, password})
-    }).then(res => {
+    })
+    .then(res => {
       this.setState({ isAuthed: res.ok });
     });
   }
 
   render() {
     const { isAuthed } = this.state;
+
+    if (isAuthed == null) {
+      // Render some sort of loading screen
+      return <div>Loading...</div>
+    }
+
     return (
       <div>
         {isAuthed ? (
