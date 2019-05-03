@@ -1,0 +1,5 @@
+.form-file {
+  display: grid;
+  grid-gap: 5px;
+  margin: 45px 0 45px 0;
+}

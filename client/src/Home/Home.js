@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import './App.css';
+import './Home.css';
 
 import Table from './Table/Table';
 
-class App extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
     this.fileInput = React.createRef();
@@ -47,7 +47,7 @@ class App extends Component {
     };
 
     reader.readAsText(file);
-  }
+  };
 
   // Acts as a buffer between file upload and table generation
   handleSubmit = (event) => {
@@ -62,11 +62,11 @@ class App extends Component {
       error, 
       isReady: error === '',
     });
-  }
+  };
 
   render() {
     return (
-      <div className="app">
+      <div className="home">
         <form className="form-file" onSubmit={this.handleSubmit}>
           <input type="file" accept=".csv" onChange={this.handleUpload}/>
           <input type="submit" value="Submit"/>
@@ -78,4 +78,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Home;
