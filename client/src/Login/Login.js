@@ -1,32 +1,22 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+
+import './Login.css';
 
 function Login(props) {
+  const username = useRef(''), password = useRef('');
+  const [error, setError] = useState('');
 
-  let usernameInput = React.createRef();
-  let passwordInput = React.createRef();
-
-  // REFACTOR - MAKE THIS COMPONENT LESS UGLY
-  function handleClick() {
-    const username = usernameInput.current.value;
-    const password = passwordInput.current.value;
-    props.handleAuth(username, password);
+  function handleSubmit() {
+    props.handleAuth(username.current.value, password.current.value);
   }
 
   return (
-    <div>
-      <h1>Hey, you need to log in!</h1>
-      <p>Username: </p>
-      <input 
-        type="text" 
-        ref={usernameInput}
-      />
-      <p>Password</p>
-      <input 
-        type="text"
-        ref={passwordInput}        
-      />
-      <br/>
-      <button onClick={handleClick}>Log in</button>
+    <div className="login">
+      <label><b>Username</b></label>
+      <input type="text" ref={username} />
+      <label><b>Password</b></label>
+      <input type="password" ref={password} />
+      <div className="submit" onClick={handleSubmit}>Log in</div>
     </div>
   );
 }

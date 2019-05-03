@@ -66,7 +66,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="app">
+      <div className="home">
         <form className="form-file" onSubmit={this.handleSubmit}>
           <input type="file" accept=".csv" onChange={this.handleUpload}/>
           <input type="submit" value="Submit"/>

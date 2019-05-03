@@ -1,0 +1,14 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

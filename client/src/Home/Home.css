@@ -1,9 +1,3 @@
-.app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .form-file {
   display: grid;
   grid-gap: 5px;
