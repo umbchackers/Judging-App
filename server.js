@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());                       
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Check authentication
+/** Return user object associated with signed JWT */
 app.get('/user/me', (req, res) => {
   const token = req.cookies.access_token;
   let user;
@@ -32,7 +32,7 @@ app.get('/user/me', (req, res) => {
   .send({ auth: user !== null, user });
 });
 
-// Used by client to authenticate admins and judges
+/** Sign a JWT and send it as a cookie to the browser */
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const auth = await spro.isJudge(username, password);
@@ -46,6 +46,7 @@ app.post('/login', async (req, res) => {
   .send({ auth });
 });
 
+/** Remove the access_token from the browser's cookies */
 app.post('/logout', async (req, res) => {
   // Send delete command to client
   // ...
