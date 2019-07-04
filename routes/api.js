@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
 
+/** Authenticate each request with browser's JWT */
 router.use((req, res, next) => {
   const token = req.cookies.access_token;
 
