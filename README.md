@@ -14,7 +14,7 @@ Working on this section... For now, contact @cmarkwell for help getting your .en
 
 ## API
 
-Here's an overview of the endpoints that this server
+Here's an overview of the server's endpoints
 
 - `POST /login` accepts a username and password, returns a signed JWT
 - `POST /logout` accepts a signed JWT, commands browser to delete JWT
