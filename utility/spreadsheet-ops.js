@@ -37,7 +37,7 @@ async function getValues(range) {
       if (error) {
         reject(error);
       } else {  
-        resolve(data.values);
+        resolve(data.values.map(value => value[0]));
       }
     });
   });

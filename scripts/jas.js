@@ -9,10 +9,20 @@ const spro = require('../utility/spreadsheet-ops');
  */
 function main() {
   const args = process.argv.slice(2);
-  let projects = spro.getProjectList();
-  let judges = spro.getJudgeList();
-  Promise.all([projects, judges]).then(values => {
-    [projects, judges] = values
+  const visits = parseInt(args[0]);
+  let pPromise = spro.getProjectList();
+  let jPromise = spro.getJudgeList();
+  Promise.all([pPromise, jPromise]).then(([projects, judges]) => {
+    judges = judges.map(judge => ({ judge, projects: [] }));
+    let judge = 0;
+    for (let visit = 0; visit < visits; visit++) {
+      projects.forEach(project => {
+        const proj = judges[judge].projects;
+        while (proj.includes(project)) judge++;
+        judges[judge].projects.push(project);
+        judge = (judge + 1) % judges.length;
+      });
+    }
   });
 }
 
