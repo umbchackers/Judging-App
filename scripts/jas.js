@@ -12,8 +12,7 @@ async function assignProjectsToJudges() {
   let judge = 0;
   for (let visit = 0; visit < visits; visit++) {
     projects.forEach(project => {
-      const projs = groups[judge].projects;
-      while (projs.includes(project)) judge++;
+      while (groups[judge].projects.includes(project)) judge++;
       groups[judge].projects.push(project);
       judge = (judge + 1) % judges.length;
     });
