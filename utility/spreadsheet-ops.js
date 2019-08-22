@@ -6,6 +6,7 @@ const sheets = google.sheets('v4');
 
 const JUDGES = 'judges!A:A';
 const PROJECTS = 'raw-devpost!A:A';
+const JUDGING= 'judging!';
 
 /** Authorize Google Sheets usage */
 function authorize() {
@@ -43,6 +44,27 @@ async function getValues(range) {
   });
 }
 
+/** Helper function to update a range of values */
+async function updateValues(range, values) {
+  return new Promise(async (resolve, reject) => {
+    const authed = await authorize();
+    if (!authed) reject('Sheets not authorized');
+
+    sheets.spreadsheets.values.update({
+      auth: jwtClient,
+      spreadsheetId: process.env.SPR_ID,
+      range,
+      values
+    }, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+
 async function isJudge(username, password) {
   if (password !== process.env.JUDGE_PASS) {
     return false
@@ -55,12 +77,24 @@ async function isJudge(username, password) {
   });
 }
 
-function getJudgeList() { return getValues(JUDGES); }
+function getJudgeList() { 
+  return getValues(JUDGES); 
+}
 
-function getProjectList() { return getValues(PROJECTS); }
+function getProjectList() { 
+  return getValues(PROJECTS).then(values => {
+    values.shift()
+    return values;
+  });
+}
+
+function updateAssignmentList(values) { 
+  return updateValues(`${JUDGING}A:A`, values);
+}
 
 module.exports = {
   getJudgeList,
   getProjectList,
+  updateAssignmentList,
   isJudge,
 };
