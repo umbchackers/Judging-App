@@ -1,4 +1,4 @@
-require('dotenv').config(); // Populate process.env with environment vars
+require('dotenv').config();
 
 const spro = require('../utility/spreadsheet-ops');
 
@@ -18,8 +18,10 @@ function assignProjectsToJudges(projects, judges) {
   return groups;
 }
 
-async function uploadGroupsToSheets(groups) {
-
+async function uploadAssignments(groups) {
+  groups.forEach(group => {
+    spro.appendAssignmentList(group);
+  });
 }
 
 async function generateScorecards() {
@@ -32,7 +34,7 @@ async function main() {
   console.info('Assigning projects to judges...');
   const groups = assignProjectsToJudges(projects, judges);
   console.info('Uploading assignments to Google Sheets...');
-  const upload = uploadGroupsToSheets(groups);
+  const upload = uploadAssignments(groups);
   console.info('Generating scorecards for each project...');
   const generate = generateScorecards();
   Promise.all([upload, generate]).then(values => {

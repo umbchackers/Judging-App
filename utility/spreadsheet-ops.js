@@ -5,8 +5,8 @@ let jwtClient;
 const sheets = google.sheets('v4');
 
 const JUDGES = 'judges!A:A';
-const PROJECTS = 'raw-devpost!A:A';
-const JUDGING= 'judging!';
+const PROJECTS = 'raw-devpost!A2:A';
+const ASSIGNMENTS = 'assignments';
 
 /** Authorize Google Sheets usage */
 function authorize() {
@@ -53,8 +53,34 @@ async function updateValues(range, values) {
     sheets.spreadsheets.values.update({
       auth: jwtClient,
       spreadsheetId: process.env.SPR_ID,
+      majorDimension: 'COLUMNS',
       range,
       values
+    }, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+
+/** Helper function to append a range of values */
+async function appendValues(range, values) {
+  return new Promise(async (resolve, reject) => {
+    const authed = await authorize();
+    if (!authed) reject('Sheets not authorized');
+
+    sheets.spreadsheets.values.append({
+      auth: jwtClient,
+      spreadsheetId: process.env.SPR_ID,
+      valueInputOption: 'RAW',
+      range,
+      resource: {
+        values,
+        majorDimension: 'COLUMNS',
+      }
     }, (error, result) => {
       if (error) {
         reject(error);
@@ -82,19 +108,17 @@ function getJudgeList() {
 }
 
 function getProjectList() { 
-  return getValues(PROJECTS).then(values => {
-    values.shift()
-    return values;
-  });
+  return getValues(PROJECTS);
 }
 
-function updateAssignmentList(values) { 
-  return updateValues(`${JUDGING}A:A`, values);
+function appendAssignmentList(assignment) { 
+  const range = `${ASSIGNMENTS}!A:A`;
+  return appendValues(range, [[assignment.judge], assignment.projects]);
 }
 
 module.exports = {
   getJudgeList,
   getProjectList,
-  updateAssignmentList,
+  appendAssignmentList,
   isJudge,
 };
