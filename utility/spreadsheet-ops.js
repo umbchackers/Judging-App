@@ -7,6 +7,7 @@ const sheets = google.sheets('v4');
 const JUDGES = 'judges!A:A';
 const PROJECTS = 'raw-devpost!A2:A';
 const ASSIGNMENTS = 'assignments';
+const SCORECARD = 'scorecard!A:A';
 
 /** Authorize Google Sheets usage */
 function authorize() {
@@ -53,9 +54,12 @@ async function updateValues(range, values) {
     sheets.spreadsheets.values.update({
       auth: jwtClient,
       spreadsheetId: process.env.SPR_ID,
-      majorDimension: 'COLUMNS',
+      valueInputOption: 'RAW',
       range,
-      values
+      resource: {
+        values,
+        majorDimension: 'COLUMNS',
+      }
     }, (error, result) => {
       if (error) {
         reject(error);
@@ -111,14 +115,20 @@ function getProjectList() {
   return getValues(PROJECTS);
 }
 
-function appendAssignmentList(assignment) { 
-  const range = `${ASSIGNMENTS}!A:A`;
-  return appendValues(range, [[assignment.judge], assignment.projects]);
+function updateAssignmentList(index, assignment) { 
+  const { judge, projects } = assignment;
+  const range = `${ASSIGNMENTS}!A${index}:B${index + projects.length - 1}`;
+  return updateValues(range, [[judge], projects]);
+}
+
+function generateScorecard(projects) {
+  return updateValues(SCORECARD, [projects]);
 }
 
 module.exports = {
   getJudgeList,
   getProjectList,
-  appendAssignmentList,
+  updateAssignmentList,
+  generateScorecard,
   isJudge,
 };

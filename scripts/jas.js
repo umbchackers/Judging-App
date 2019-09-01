@@ -18,26 +18,28 @@ function assignProjectsToJudges(projects, judges) {
   return groups;
 }
 
-async function uploadAssignments(groups) {
-  groups.forEach(group => {
-    spro.appendAssignmentList(group);
+async function updateAssignments(assignments) {
+  let index = 1;
+  assignments.forEach(assignment => {
+    spro.updateAssignmentList(index, assignment);
+    index += assignment.projects.length;
   });
 }
 
-async function generateScorecards() {
-
+async function generateScorecard(projects) {
+  spro.generateScorecard(projects);
 }
 
 async function main() {
   const projects = await spro.getProjectList();
   const judges = await spro.getJudgeList();
   console.info('Assigning projects to judges...');
-  const groups = assignProjectsToJudges(projects, judges);
+  const assignments = assignProjectsToJudges(projects, judges);
   console.info('Uploading assignments to Google Sheets...');
-  const upload = uploadAssignments(groups);
+  const upload = updateAssignments(assignments);
   console.info('Generating scorecards for each project...');
-  const generate = generateScorecards();
-  Promise.all([upload, generate]).then(values => {
+  const generate = generateScorecard(projects);
+  Promise.all([upload, generate]).then(() => {
     console.info('\x1b[32m%s\x1b[0m', 'Done!');
   });
 }
