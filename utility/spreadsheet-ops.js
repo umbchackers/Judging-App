@@ -5,7 +5,7 @@ let jwtClient;
 const sheets = google.sheets('v4');
 
 const JUDGES = 'judges!A:A';
-const PROJECTS = 'raw-devpost!A2:A';
+const PROJECTS = 'raw-devpost!A2:B';
 const ASSIGNMENTS = 'assignments';
 const SCORECARD = 'scorecard!A:A';
 
@@ -39,7 +39,7 @@ async function getValues(range) {
       if (error) {
         reject(error);
       } else {  
-        resolve(data.values.map(value => value[0]));
+        resolve(data.values.map(value => value.join(' ')));
       }
     });
   });
@@ -117,12 +117,28 @@ function getProjectList() {
 
 function updateAssignmentList(index, assignment) { 
   const { judge, projects } = assignment;
-  const range = `${ASSIGNMENTS}!A${index}:B${index + projects.length - 1}`;
-  return updateValues(range, [[judge], projects]);
+  const range = `${ASSIGNMENTS}!A${index}:B${index + projects.length}`;
+  return updateValues(range, [[judge], ['', ...projects]]);
 }
 
 function generateScorecard(projects) {
   return updateValues(SCORECARD, [projects]);
+}
+
+async function getAssignmentsFor(user) {
+  const userIndices = await getValues(`${ASSIGNMENTS}!A:A`);
+  let start, stop;
+  for (let i = 0; i < userIndices.length; i++) {
+    if (userIndices[i] === user) {
+      start = i + 2;
+      break;
+    } else if (i === userIndices.length - 1) {
+      throw `Assignments for user ${user} not found.`;
+    }
+  }
+  stop = start - 1 === userIndices.length ? '' : start;
+  while (stop !== '' && userIndices[stop] === '') stop++;
+  return getValues(`${ASSIGNMENTS}!B${start}:B${stop}`);
 }
 
 module.exports = {
@@ -130,5 +146,6 @@ module.exports = {
   getProjectList,
   updateAssignmentList,
   generateScorecard,
+  getAssignmentsFor,
   isJudge,
 };

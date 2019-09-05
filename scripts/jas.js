@@ -22,7 +22,7 @@ async function updateAssignments(assignments) {
   let index = 1;
   assignments.forEach(assignment => {
     spro.updateAssignmentList(index, assignment);
-    index += assignment.projects.length;
+    index += assignment.projects.length + 1;
   });
 }
 
