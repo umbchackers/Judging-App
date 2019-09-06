@@ -21,29 +21,25 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get('/user/me', (req, res) => {
   const token = req.cookies.access_token;
   let user;
-
   try {
     user = jwt.verify(token, process.env.JWT_SECRET); 
   } catch (err) {
     user = null;
   }
-
   res.status(user !== null ? 200 : 401)
-  .send({ auth: user !== null, user });
+    .send({ auth: user !== null, user });
 });
 
 /** Sign a JWT and send it as a cookie to the browser */
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const auth = await spro.isJudge(username, password);
-
   if (auth) {
     const token = jwt.sign({ username }, process.env.JWT_SECRET);
     res.cookie('access_token', token, {httpOnly: true}); 
   }
-
   res.status(auth ? 200 : 401)
-  .send({ auth });
+    .send({ auth });
 });
 
 /** Remove the access_token from the browser's cookies */

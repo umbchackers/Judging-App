@@ -4,6 +4,7 @@
   "description": "Express backend for Judging App",
   "main": "server.js",
   "scripts": {
+    "jas": "node scripts/jas.js",
     "client": "cd client && npm run start",
     "server": "nodemon server.js",
     "both": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
