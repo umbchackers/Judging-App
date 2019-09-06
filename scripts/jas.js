@@ -26,8 +26,8 @@ async function updateAssignments(assignments) {
   });
 }
 
-async function generateScorecard(projects) {
-  spro.generateScorecard(projects);
+async function generateScorecard(projects, judges) {
+  spro.generateScorecard(projects, judges);
 }
 
 async function main() {
@@ -38,7 +38,7 @@ async function main() {
   console.info('Uploading assignments to Google Sheets...');
   const upload = updateAssignments(assignments);
   console.info('Generating scorecards for each project...');
-  const generate = generateScorecard(projects);
+  const generate = generateScorecard(projects, judges);
   Promise.all([upload, generate]).then(() => {
     console.info('\x1b[32m%s\x1b[0m', 'Done!');
   });

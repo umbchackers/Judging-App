@@ -7,7 +7,7 @@ const sheets = google.sheets('v4');
 const JUDGES = 'judges!B2:B';
 const PROJECTS = 'raw-devpost!A2:B';
 const ASSIGNMENTS = 'assignments';
-const SCORECARD = 'scorecard!A:A';
+const SCORECARD = 'scorecard';
 
 /** Authorize Google Sheets usage */
 function authorize() {
@@ -123,8 +123,10 @@ function updateAssignmentList(index, assignment) {
   return updateValues(range, [[judge], ['', ...projects]]);
 }
 
-function generateScorecard(projects) {
-  return updateValues(SCORECARD, [projects]);
+function generateScorecard(projects, judges) {
+  return updateValues(`${SCORECARD}!B1`, [[...judges]], { 
+    majorDimension: 'ROWS' 
+  }).then(() => updateValues(`${SCORECARD}!A2:A`, [[...projects]]));
 }
 
 async function getAssignmentsFor(user) {
