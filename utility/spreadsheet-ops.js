@@ -4,7 +4,7 @@ const key = require('./client_secret.json');
 let jwtClient;
 const sheets = google.sheets('v4');
 
-const JUDGES = 'judges!A:A';
+const JUDGES = 'judges!B2:B';
 const PROJECTS = 'raw-devpost!A2:B';
 const ASSIGNMENTS = 'assignments';
 const SCORECARD = 'scorecard!A:A';
@@ -39,14 +39,14 @@ async function getValues(range) {
       if (error) {
         reject(error);
       } else {  
-        resolve(data.values.map(value => value.join(' ')));
+        resolve(data.values.map(value => value.join(' #')));
       }
     });
   });
 }
 
 /** Helper function to update a range of values */
-async function updateValues(range, values) {
+async function updateValues(range, values, options) {
   return new Promise(async (resolve, reject) => {
     const authed = await authorize();
     if (!authed) reject('Sheets not authorized');
@@ -59,6 +59,7 @@ async function updateValues(range, values) {
       resource: {
         values,
         majorDimension: 'COLUMNS',
+        ...options,
       }
     }, (error, result) => {
       if (error) {
@@ -71,7 +72,7 @@ async function updateValues(range, values) {
 }
 
 /** Helper function to append a range of values */
-async function appendValues(range, values) {
+async function appendValues(range, values, options) {
   return new Promise(async (resolve, reject) => {
     const authed = await authorize();
     if (!authed) reject('Sheets not authorized');
@@ -83,7 +84,8 @@ async function appendValues(range, values) {
       range,
       resource: {
         values,
-        majorDimension: 'COLUMNS',
+        majorDimension: 'COLUMN',
+        ...options,
       }
     }, (error, result) => {
       if (error) {
@@ -100,7 +102,7 @@ async function isJudge(username, password) {
     return false
   }
 
-  return getValues(JUDGES_COL).then(values => {
+  return getValues(JUDGES).then(values => {
     values.forEach(value => {
       if (value === username) return true;
     });
@@ -126,18 +128,18 @@ function generateScorecard(projects) {
 }
 
 async function getAssignmentsFor(user) {
-  const userIndices = await getValues(`${ASSIGNMENTS}!A:A`);
+  const users = await getValues(`${ASSIGNMENTS}!A:A`);
   let start, stop;
-  for (let i = 0; i < userIndices.length; i++) {
-    if (userIndices[i] === user) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i] === user) {
       start = i + 2;
       break;
-    } else if (i === userIndices.length - 1) {
+    } else if (i === users.length - 1) {
       throw `Assignments for user ${user} not found.`;
     }
   }
-  stop = start - 1 === userIndices.length ? '' : start;
-  while (stop !== '' && userIndices[stop] === '') stop++;
+  stop = start - 1 === users.length ? '' : start;
+  while (stop !== '' && users[stop] === '') stop++;
   return getValues(`${ASSIGNMENTS}!B${start}:B${stop}`);
 }
 

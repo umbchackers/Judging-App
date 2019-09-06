@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
 
+const spro = require('../utility/spreadsheet-ops');
+
 /** Authenticate each request with browser's JWT */
 router.use((req, res, next) => {
   const token = req.cookies.access_token;
@@ -26,10 +28,6 @@ router.get('/assignments', async (req, res) => {
   }
   res.status(typeof data === 'Object' ? 200 : 400)
     .send({ data });
-});
-
-router.post('/rankings', async (req, res) => {
-
 });
 
 module.exports = router;
