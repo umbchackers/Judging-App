@@ -124,9 +124,8 @@ function updateAssignmentList(index, assignment) {
 }
 
 function generateScorecard(projects, judges) {
-  return updateValues(`${SCORECARD}!B1`, [[...judges]], { 
-    majorDimension: 'ROWS' 
-  }).then(() => updateValues(`${SCORECARD}!A2:A`, [[...projects]]));
+  return updateValues(`${SCORECARD}!B1`, [['Total', ...judges]], { majorDimension: 'ROWS' })
+    .then(() => updateValues(`${SCORECARD}!A2:A`, [[...projects]]));
 }
 
 async function getAssignmentsFor(user) {
@@ -145,11 +144,28 @@ async function getAssignmentsFor(user) {
   return getValues(`${ASSIGNMENTS}!B${start}:B${stop}`);
 }
 
+async function updateRankingsFor(user, rankings) {
+  const projects = await getProjectList();
+  const judges = await getJudgeList();
+  const col = String.fromCharCode(judges.indexOf(user) + 'C'.charCodeAt(0));
+  const rows = [];
+  for (let i = 0; i < rankings.length; i++) {
+    for (let j = 0; j < projects.length; j++) {
+      if (rankings[i].project === projects[j]) {
+        rows.push({ row: j + 2, rank: rankings[i].rank });
+        break;
+      }
+    }
+  }
+  return batchUpdateValues();
+}
+
 module.exports = {
   getJudgeList,
   getProjectList,
   updateAssignmentList,
   generateScorecard,
   getAssignmentsFor,
+  updateRankingsFor,
   isJudge,
 };
