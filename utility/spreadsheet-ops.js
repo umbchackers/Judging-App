@@ -7,7 +7,7 @@ const sheets = google.sheets('v4');
 const JUDGES = 'judges!B2:B';
 const PROJECTS = 'raw-devpost!A2:B';
 const ASSIGNMENTS = 'assignments';
-const SCORECARD = 'scorecard!A:A';
+const SCORECARD = 'scorecard';
 
 /** Authorize Google Sheets usage */
 function authorize() {
@@ -40,6 +40,26 @@ async function getValues(range) {
         reject(error);
       } else {  
         resolve(data.values.map(value => value.join(' #')));
+      }
+    });
+  });
+}
+
+/** Helper function to clear a range of values */
+async function clearValues(range, values, options) {
+  return new Promise(async (resolve, reject) => {
+    const authed = await authorize();
+    if (!authed) reject('Sheets not authorized');
+
+    sheets.spreadsheets.values.clear({
+      auth: jwtClient,
+      spreadsheetId: process.env.SPR_ID,
+      range
+    }, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
       }
     });
   });
@@ -123,8 +143,9 @@ function updateAssignmentList(index, assignment) {
   return updateValues(range, [[judge], ['', ...projects]]);
 }
 
-function generateScorecard(projects) {
-  return updateValues(SCORECARD, [projects]);
+function generateScorecard(projects, judges) {
+  return updateValues(`${SCORECARD}!B1`, [['Total', ...judges]], { majorDimension: 'ROWS' })
+    .then(() => updateValues(`${SCORECARD}!A2:A`, [[...projects]]));
 }
 
 async function getAssignmentsFor(user) {
@@ -143,11 +164,28 @@ async function getAssignmentsFor(user) {
   return getValues(`${ASSIGNMENTS}!B${start}:B${stop}`);
 }
 
+async function updateRankingsFor(user, rankings) {
+  const projects = await getProjectList();
+  const judges = await getJudgeList();
+  const col = String.fromCharCode(judges.indexOf(user) + 'C'.charCodeAt(0));
+  return clearValues(`${SCORECARD}!${col}2:${col}`).then(() => {
+    for (let i = 0; i < rankings.length; i++) {
+      for (let j = 0; j < projects.length; j++) {
+        if (rankings[i].project === projects[j]) {
+          updateValues(`${SCORECARD}!${col + (j + 2)}`, [[rankings[i].rank]]);
+          break;
+        }
+      }
+    }
+  });
+}
+
 module.exports = {
   getJudgeList,
   getProjectList,
   updateAssignmentList,
   generateScorecard,
   getAssignmentsFor,
+  updateRankingsFor,
   isJudge,
 };

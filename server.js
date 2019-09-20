@@ -1,21 +1,25 @@
-require('dotenv').config(); // Populate process.env with environment vars
-
 const jwt = require('jsonwebtoken');
-const spro = require('./utility/spreadsheet-ops.js'); 
+const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-
 const api = require('./routes/api');
 
 const app = express();
-const port = process.env.PORT || 5000;
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+} else if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config();
+}
 
 // JSON Parsing middleware for POST requests
 app.use(cookieParser());
 app.use(bodyParser.json());                       
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.use('/api', api);
 
 /** Return user object associated with signed JWT */
 app.get('/user/me', (req, res) => {
@@ -48,6 +52,9 @@ app.post('/logout', async (req, res) => {
   // ...
 });
 
-app.use('/api', api);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}!`));
