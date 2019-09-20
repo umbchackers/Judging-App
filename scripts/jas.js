@@ -1,4 +1,6 @@
-require('dotenv').config();
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config();
+}
 
 const spro = require('../utility/spreadsheet-ops');
 

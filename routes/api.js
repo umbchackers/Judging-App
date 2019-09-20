@@ -6,7 +6,7 @@ const router = express.Router();
 const spro = require('../utility/spreadsheet-ops');
 
 /** Authenticate each request with browser's JWT */
-/*router.use((req, res, next) => {
+router.use((req, res, next) => {
   const token = req.cookies.access_token;
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -16,7 +16,7 @@ const spro = require('../utility/spreadsheet-ops');
     res.status(401)
       .send({ auth: false, user: null });
   }
-});*/
+});
 
 /** Retrieve a list of assignments for a judge */
 router.get('/assignments', async (req, res) => {
@@ -34,7 +34,7 @@ router.get('/assignments', async (req, res) => {
 /** Post judge ranks to the scorecard sheet */
 router.post('/rank', async (req, res) => {
   const rankings = req.body.rankings;
-  const user = 'cmarkwell19';
+  const user = req.decoded.username;
   let data;
   try {
     data = await spro.updateRankingsFor(user, rankings);
