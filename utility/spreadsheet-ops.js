@@ -45,6 +45,26 @@ async function getValues(range) {
   });
 }
 
+/** Helper function to clear a range of values */
+async function clearValues(range, values, options) {
+  return new Promise(async (resolve, reject) => {
+    const authed = await authorize();
+    if (!authed) reject('Sheets not authorized');
+
+    sheets.spreadsheets.values.clear({
+      auth: jwtClient,
+      spreadsheetId: process.env.SPR_ID,
+      range
+    }, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+
 /** Helper function to update a range of values */
 async function updateValues(range, values, options) {
   return new Promise(async (resolve, reject) => {
@@ -148,16 +168,16 @@ async function updateRankingsFor(user, rankings) {
   const projects = await getProjectList();
   const judges = await getJudgeList();
   const col = String.fromCharCode(judges.indexOf(user) + 'C'.charCodeAt(0));
-  const rows = [];
-  for (let i = 0; i < rankings.length; i++) {
-    for (let j = 0; j < projects.length; j++) {
-      if (rankings[i].project === projects[j]) {
-        rows.push({ row: j + 2, rank: rankings[i].rank });
-        break;
+  return clearValues(`${SCORECARD}!${col}2:${col}`).then(() => {
+    for (let i = 0; i < rankings.length; i++) {
+      for (let j = 0; j < projects.length; j++) {
+        if (rankings[i].project === projects[j]) {
+          updateValues(`${SCORECARD}!${col + (j + 2)}`, [[rankings[i].rank]]);
+          break;
+        }
       }
     }
-  }
-  return batchUpdateValues();
+  });
 }
 
 module.exports = {
