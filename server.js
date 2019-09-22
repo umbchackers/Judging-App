@@ -44,7 +44,7 @@ app.post('/login', async (req, res) => {
 
 /** Remove the access_token from the browser's cookies */
 app.post('/logout', async (req, res) => {
-  // Send delete command to client
+  // Send delete cookie command to client
   // ...
 });
 
