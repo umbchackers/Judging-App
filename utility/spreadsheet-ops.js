@@ -12,9 +12,9 @@ const SCORECARD = 'scorecard';
 /** Authorize Google Sheets usage */
 function authorize() {
   jwtClient = new google.auth.JWT(
-    key.client_email, 
+    process.env.GAPI_CLIENT_EMAIL, 
     null, 
-    key.private_key,
+    process.env.GAPI_PRIVATE_KEY,
     ['https://www.googleapis.com/auth/spreadsheets']
   );
 
