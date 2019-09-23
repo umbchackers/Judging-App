@@ -1,5 +1,9 @@
+require('dotenv').config();
+
 const jwt = require('jsonwebtoken');
 const path = require('path');
+
+const spro = require('./utility/spreadsheet-ops');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -10,8 +14,6 @@ const app = express();
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client/build')));
-} else if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config();
 }
 
 // JSON Parsing middleware for POST requests

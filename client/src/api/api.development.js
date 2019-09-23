@@ -1,25 +1,19 @@
-function getRequest(url) {
-  return fetch(url).then(res => {
-    if (res.ok) res.json()
-    else throw 
-  }).catch()
-}
+const getAssignments = async () => {
+  const projects = [];
+  const n = 15;
+  for (let i = 0; i < n; i++) projects.push('Project ' + i);
+  return projects;
+};
 
-function postRequest(url, resource) {
-  return fetch(url, {
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(resource)
-  }).then(res => {
-    if (res.ok) res.json()
-    else throw 
-  });
-}
+const getUserInfo = async () => ({  });
 
-const getAssignments = getRequest('/api/assignments');
-const postLogin = (username, password) => postRequest('/login', { username, password });
+const postLogin = async (username, login) => true;
 
-export {
+const postRankings = async (rankings) => true;
+
+export  {
   getAssignments,
+  getUserInfo,
   postLogin,
+  postRankings,
 };
