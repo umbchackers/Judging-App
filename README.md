@@ -19,5 +19,7 @@ Here's an overview of the server's endpoints
 - `POST /login` accepts a username and password, returns a signed JWT
 - `POST /logout` accepts a signed JWT, commands browser to delete JWT
 - `GET /user/me` accepts a signed JWT, returns user object tied to JWT
+- `GET /api/assignments` uses JWT from login to retrieve assignment list
+- `POST /api/rankings` accepts JSON in the form of { "rankings": [{ project: "", rank: x }, {...}, {...}] }
 
 

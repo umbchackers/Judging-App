@@ -104,7 +104,7 @@ async function appendValues(range, values, options) {
       range,
       resource: {
         values,
-        majorDimension: 'COLUMN',
+        majorDimension: 'COLUMNS',
         ...options,
       }
     }, (error, result) => {
@@ -121,11 +121,11 @@ async function isJudge(username, password) {
   if (password !== process.env.JUDGE_PASS) {
     return false
   }
-
   return getValues(JUDGES).then(values => {
-    values.forEach(value => {
-      if (value === username) return true;
-    });
+    for (let i = 0; i < values.length; i++) {
+      if (values[i] === username) return true;
+    }
+    return false;
   });
 }
 
