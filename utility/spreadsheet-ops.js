@@ -104,7 +104,7 @@ async function appendValues(range, values, options) {
       range,
       resource: {
         values,
-        majorDimension: 'COLUMN',
+        majorDimension: 'COLUMNS',
         ...options,
       }
     }, (error, result) => {
