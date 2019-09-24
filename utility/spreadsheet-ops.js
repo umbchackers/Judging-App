@@ -1,5 +1,4 @@
 const { google } = require('googleapis');
-const key = require('./client_secret.json');
 
 let jwtClient;
 const sheets = google.sheets('v4');

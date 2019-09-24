@@ -4,7 +4,7 @@
   "description": "Express backend for Judging App",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_ENV=production node server.js",
+    "start": "node server.js",
     "jas": "node scripts/jas.js",
     "dev-cl": "cd client && npm run start",
     "dev-sv": "nodemon server.js",
