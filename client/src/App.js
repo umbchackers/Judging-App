@@ -31,7 +31,7 @@ class App extends Component {
 
   componentDidMount() {
     api.getUserInfo().then(data => {
-      this.setState({ isLoading: false, isAuthed: !!data.user.username });
+      this.setState({ isLoading: false, isAuthed: !!data.user });
     });
   }
 
