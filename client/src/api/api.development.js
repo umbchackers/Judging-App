@@ -5,11 +5,12 @@ const getAssignments = async () => {
   return projects;
 };
 
-const getUserInfo = async () => ({  });
+const getUserInfo = async () => ({ user: { username: 'judgedreadd' } });
 
-const postLogin = async (username, login) => true;
+const postLogin = async (username, login) => ({ auth: true });
 
-const postRankings = async (rankings) => true;
+// Unsure exactly what is returned from this POST. Will update when I get home today.
+const postRankings = async (rankings) => ({ });
 
 export  {
   getAssignments,

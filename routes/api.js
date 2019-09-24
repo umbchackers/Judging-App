@@ -32,7 +32,7 @@ router.get('/assignments', async (req, res) => {
 });
 
 /** Post judge ranks to the scorecard sheet */
-router.post('/rank', async (req, res) => {
+router.post('/rankings', async (req, res) => {
   const rankings = req.body.rankings;
   const user = req.decoded.username;
   let data;
