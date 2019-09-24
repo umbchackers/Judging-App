@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 
+import api from 'api/api';
+
 import ReactLoading from 'react-loading';
 
 import Home from './Home/Home.js';
@@ -28,27 +30,21 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('/user/me')
-    .then(res => {
-      this.setState({ isLoading: false, isAuthed: res.ok });
+    api.getUserInfo().then(data => {
+      this.setState({ isLoading: false, isAuthed: !!data.user.username });
     });
   }
 
   handleAuth = (username, password) => {
-    fetch('/login', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({username, password})
-    })
-    .then(res => {
-      this.setState({ isAuthed: res.ok });
+    api.postLogin(username, password).then(data => {
+      this.setState({ isAuthed: data.auth });
     });
   }
 
   render() {
     const { isLoading, isAuthed } = this.state;
 
-    if (isLoading) { return Loading(); }
+    if (isLoading) return Loading();
 
     return (
       <div className="app">

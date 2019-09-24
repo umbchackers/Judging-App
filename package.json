@@ -4,11 +4,12 @@
   "description": "Express backend for Judging App",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "jas": "node scripts/jas.js",
-    "client": "cd client && npm run start",
-    "server": "nodemon server.js",
-    "both": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev-cl": "cd client && npm run start",
+    "dev-sv": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run dev-cl\" \"npm run dev-sv\"",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -22,13 +23,13 @@
   "homepage": "https://github.com/umbchackers/Judging-App#readme",
   "dependencies": {
     "cookie-parser": "^1.4.4",
-    "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "googleapis": "^38.0.0",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
     "concurrently": "^4.1.0",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "dotenv": "^6.2.0"
   }
 }

@@ -1,5 +1,4 @@
 const { google } = require('googleapis');
-const key = require('./client_secret.json');
 
 let jwtClient;
 const sheets = google.sheets('v4');
@@ -7,14 +6,14 @@ const sheets = google.sheets('v4');
 const JUDGES = 'judges!B2:B';
 const PROJECTS = 'raw-devpost!A2:B';
 const ASSIGNMENTS = 'assignments';
-const SCORECARD = 'scorecard!A:A';
+const SCORECARD = 'scorecard';
 
 /** Authorize Google Sheets usage */
 function authorize() {
   jwtClient = new google.auth.JWT(
-    key.client_email, 
+    process.env.GAPI_CLIENT_EMAIL, 
     null, 
-    key.private_key,
+    process.env.GAPI_PRIVATE_KEY,
     ['https://www.googleapis.com/auth/spreadsheets']
   );
 
@@ -40,6 +39,26 @@ async function getValues(range) {
         reject(error);
       } else {  
         resolve(data.values.map(value => value.join(' #')));
+      }
+    });
+  });
+}
+
+/** Helper function to clear a range of values */
+async function clearValues(range, values, options) {
+  return new Promise(async (resolve, reject) => {
+    const authed = await authorize();
+    if (!authed) reject('Sheets not authorized');
+
+    sheets.spreadsheets.values.clear({
+      auth: jwtClient,
+      spreadsheetId: process.env.SPR_ID,
+      range
+    }, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
       }
     });
   });
@@ -84,7 +103,7 @@ async function appendValues(range, values, options) {
       range,
       resource: {
         values,
-        majorDimension: 'COLUMN',
+        majorDimension: 'COLUMNS',
         ...options,
       }
     }, (error, result) => {
@@ -101,11 +120,11 @@ async function isJudge(username, password) {
   if (password !== process.env.JUDGE_PASS) {
     return false
   }
-
   return getValues(JUDGES).then(values => {
-    values.forEach(value => {
-      if (value === username) return true;
-    });
+    for (let i = 0; i < values.length; i++) {
+      if (values[i] === username) return true;
+    }
+    return false;
   });
 }
 
@@ -123,8 +142,9 @@ function updateAssignmentList(index, assignment) {
   return updateValues(range, [[judge], ['', ...projects]]);
 }
 
-function generateScorecard(projects) {
-  return updateValues(SCORECARD, [projects]);
+function generateScorecard(projects, judges) {
+  return updateValues(`${SCORECARD}!B1`, [['Total', ...judges]], { majorDimension: 'ROWS' })
+    .then(() => updateValues(`${SCORECARD}!A2:A`, [[...projects]]));
 }
 
 async function getAssignmentsFor(user) {
@@ -143,11 +163,28 @@ async function getAssignmentsFor(user) {
   return getValues(`${ASSIGNMENTS}!B${start}:B${stop}`);
 }
 
+async function updateRankingsFor(user, rankings) {
+  const projects = await getProjectList();
+  const judges = await getJudgeList();
+  const col = String.fromCharCode(judges.indexOf(user) + 'C'.charCodeAt(0));
+  return clearValues(`${SCORECARD}!${col}2:${col}`).then(() => {
+    for (let i = 0; i < rankings.length; i++) {
+      for (let j = 0; j < projects.length; j++) {
+        if (rankings[i].project === projects[j]) {
+          updateValues(`${SCORECARD}!${col + (j + 2)}`, [[rankings[i].rank]]);
+          break;
+        }
+      }
+    }
+  });
+}
+
 module.exports = {
   getJudgeList,
   getProjectList,
   updateAssignmentList,
   generateScorecard,
   getAssignmentsFor,
+  updateRankingsFor,
   isJudge,
 };

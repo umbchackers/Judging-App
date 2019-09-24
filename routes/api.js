@@ -18,11 +18,26 @@ router.use((req, res, next) => {
   }
 });
 
+/** Retrieve a list of assignments for a judge */
 router.get('/assignments', async (req, res) => {
   const user = req.query.user;
   let data;
   try {
     data = await spro.getAssignmentsFor(user);
+  } catch (err) {
+    data = err;
+  }
+  res.status(typeof data === 'Object' ? 200 : 400)
+    .send({ data });
+});
+
+/** Post judge ranks to the scorecard sheet */
+router.post('/rankings', async (req, res) => {
+  const rankings = req.body.rankings;
+  const user = req.decoded.username;
+  let data;
+  try {
+    data = await spro.updateRankingsFor(user, rankings);
   } catch (err) {
     data = err;
   }
