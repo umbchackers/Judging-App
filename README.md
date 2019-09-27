@@ -21,5 +21,3 @@ Here's an overview of the server's endpoints
 - `GET /user/me` accepts a signed JWT, returns user object tied to JWT
 - `GET /api/assignments` uses JWT from login to retrieve assignment list
 - `POST /api/rankings` accepts JSON in the form of { "rankings": [{ project: "", rank: x }, {...}, {...}] }
-
-
