@@ -17,11 +17,19 @@ function Login(props) {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="username">
           <Form.Label>Username</Form.Label>
-          <Form.Control type="text" placeholder="Enter username" />
+          <Form.Control 
+            ref={username}
+            type="text" 
+            placeholder="Enter username" 
+          />
         </Form.Group>
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Enter password" />
+          <Form.Control 
+            ref={password}
+            type="password" 
+            placeholder="Enter password" 
+          />
         </Form.Group>
         <Button variant="primary" type="submit">
           Log in
