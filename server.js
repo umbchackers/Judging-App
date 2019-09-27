@@ -33,7 +33,8 @@ app.get('/user/me', (req, res) => {
   } catch (err) {
     user = null;
   }
-  res.status(user !== null ? 200 : 401).send({ auth: user !== null, user });
+  res.status(user !== null ? 200 : 401)
+    .send({ auth: user !== null, user });
 });
 
 /** Sign a JWT and send it as a cookie to the browser */
@@ -44,7 +45,8 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign({ username }, process.env.JWT_SECRET);
     res.cookie('access_token', token, { httpOnly: true });
   }
-  res.status(auth ? 200 : 401).send({ auth });
+  res.status(auth ? 200 : 400)
+    .send(jwt.verify(token, process.env.JWT_SECRET));
 });
 
 /** Remove the access_token from the browser's cookies */

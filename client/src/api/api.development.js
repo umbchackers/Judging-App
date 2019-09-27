@@ -7,7 +7,7 @@ const getAssignments = async () => {
 
 const getUserInfo = async () => ({ });
 
-const postLogin = async (username, login) => ({ auth: true });
+const postLogin = async (username, login) => ({ user: { username } });
 
 const postRankings = async (rankings) => ({ });
 

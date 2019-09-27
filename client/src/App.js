@@ -12,7 +12,7 @@ function Loading(props) {
   return (
     <div className="loading">
       <ReactLoading
-        type="bubbles"
+        type="spin"
         color="#aaa"
         delay={500}
       />
@@ -26,30 +26,37 @@ class App extends Component {
     this.state = { 
       isLoading: true,
       isAuthed: false,
+      assignments: [],
     };
   }
 
   componentDidMount() {
-    api.getUserInfo().then(data => {
-      this.setState({ isLoading: false, isAuthed: !!data.user });
-    });
+    api.getUserInfo().then(this.getAssignments);
   }
 
   handleAuth = (username, password) => {
-    api.postLogin(username, password).then(data => {
-      this.setState({ isAuthed: data.auth });
+    api.postLogin(username, password).then(this.getAssignments);
+  }
+
+  getAssignments = data => {
+    this.setState({ isLoading: !!data.user, isAuthed: !!data.user }, () => {
+      if (this.state.isAuthed) {
+        api.getAssignments().then(assignments => {
+          this.setState({ assignments, isLoading: false });
+        });
+      }
     });
   }
 
   render() {
-    const { isLoading, isAuthed } = this.state;
+    const { isLoading, isAuthed, assignments } = this.state;
 
     if (isLoading) return Loading();
 
     return (
       <div className="app">
         {isAuthed ? (
-          <Home />
+          <Home assignments={assignments} />
         ) : (
           <Login handleAuth={this.handleAuth} />
         )}

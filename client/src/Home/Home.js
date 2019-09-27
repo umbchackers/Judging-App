@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './Home.css';
 
-import api from 'api/api';
-
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -13,14 +11,8 @@ class Home extends Component {
     };
   }
 
-  componentDidMount() {
-    api.getAssignments().then(assignments => {
-      this.setState({ assignments });
-    });
-  }
-
   render() {
-    const { assignments } = this.state;
+    const { assignments } = this.props;
 
     return (
       <div className="home">
