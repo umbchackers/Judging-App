@@ -4,12 +4,12 @@ import { Form, Button } from 'react-bootstrap';
 
 import './Login.css';
 
-function Login(props) {
+const Login = ({ handleAuth }) => {
   const username = useRef(''), password = useRef('');
 
-  function handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
-    props.handleAuth(username.current.value, password.current.value);
+    handleAuth(username.current.value, password.current.value);
   }
 
   return (
@@ -37,6 +37,6 @@ function Login(props) {
       </Form>
     </div>
   );
-}
+};
 
 export default Login;

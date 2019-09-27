@@ -33,20 +33,20 @@ app.get('/user/me', (req, res) => {
   } catch (err) {
     user = null;
   }
-  res.status(user !== null ? 200 : 401)
-    .send({ auth: user !== null, user });
+  res.status(200).send({ user });
 });
 
 /** Sign a JWT and send it as a cookie to the browser */
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const auth = await spro.isJudge(username, password);
+  let data = null;
   if (auth) {
-    const token = jwt.sign({ username }, process.env.JWT_SECRET);
+    data = { username };
+    const token = jwt.sign(data, process.env.JWT_SECRET);
     res.cookie('access_token', token, { httpOnly: true });
   }
-  res.status(auth ? 200 : 400)
-    .send(jwt.verify(token, process.env.JWT_SECRET));
+  res.status(auth ? 200 : 400).send({ data });
 });
 
 /** Remove the access_token from the browser's cookies */

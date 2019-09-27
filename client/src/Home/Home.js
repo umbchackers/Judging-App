@@ -1,25 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './Home.css';
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.fileInput = React.createRef();
-    this.state = {
-      isReady: false,
-      assignments: [],
-    };
-  }
+const renderCards = assignments => {
+  const cards = [];
+  assignments.forEach(assignment => {
+    cards.push(assignment);
+  });
+  return cards
+};
 
-  render() {
-    const { assignments } = this.props;
-
-    return (
-      <div className="home">
-        {assignments}
-      </div>
-    );
-  }
-}
+const Home = ({ assignments }) => (
+  <div className="home">
+    {renderCards(assignments)}
+  </div>
+)
 
 export default Home;

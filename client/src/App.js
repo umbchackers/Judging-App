@@ -8,17 +8,15 @@ import ReactLoading from 'react-loading';
 import Home from './Home/Home.js';
 import Login from './Login/Login.js';
 
-function Loading(props) {
-  return (
-    <div className="loading">
-      <ReactLoading
-        type="spin"
-        color="#aaa"
-        delay={500}
-      />
-    </div>
-  );
-}
+const Loading = () => (
+  <div className="loading">
+    <ReactLoading
+      type="bubbles"
+      color="#aaa"
+      delay={500}
+    />
+  </div>
+);
 
 class App extends Component {
   constructor(props) {
@@ -27,6 +25,7 @@ class App extends Component {
       isLoading: true,
       isAuthed: false,
       assignments: [],
+      data: {},
     };
   }
 
@@ -39,7 +38,7 @@ class App extends Component {
   }
 
   getAssignments = data => {
-    this.setState({ isLoading: !!data.user, isAuthed: !!data.user }, () => {
+    this.setState({ data, isLoading: !!data.user, isAuthed: !!data.user }, () => {
       if (this.state.isAuthed) {
         api.getAssignments().then(assignments => {
           this.setState({ assignments, isLoading: false });
