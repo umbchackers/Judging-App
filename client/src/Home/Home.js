@@ -32,6 +32,13 @@ class Home extends Component {
         </Card>
       );
     });
+    cards.push(
+      <Card style={cardStyle} key="doneCard">
+        <Card.Body>
+          <Card.Title>All Done?</Card.Title>
+        </Card.Body>
+      </Card>
+    )
     return <CardDeck>{cards}</CardDeck>
   }
 

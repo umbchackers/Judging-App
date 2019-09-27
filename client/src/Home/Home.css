@@ -1,3 +1,11 @@
 .home {
   height: 100%;
 }
+
+.card-deck {
+  justify-content: center;
+}
+
+body .card-deck .card {
+  margin-bottom: 30px;
+}
