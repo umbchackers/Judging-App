@@ -22,7 +22,18 @@ class Home extends Component {
   }
 
   renderCards = () => {
-    const cards = [];
+    const cards = [(
+      <Card style={cardStyle} key="doneCard">
+        <Card.Body>
+          <Card.Title>Your top three</Card.Title>
+          <Card.Text>
+            1. {false || 'Undecided'} <br />
+            2. {false || 'Undecided'} <br />
+            3. {false || 'Undecided'}
+          </Card.Text>
+        </Card.Body>
+      </Card>
+    )];
     this.props.assignments.forEach(a => {
       cards.push(
         <Card style={cardStyle} key={a}>
@@ -32,13 +43,6 @@ class Home extends Component {
         </Card>
       );
     });
-    cards.push(
-      <Card style={cardStyle} key="doneCard">
-        <Card.Body>
-          <Card.Title>All Done?</Card.Title>
-        </Card.Body>
-      </Card>
-    )
     return <CardDeck>{cards}</CardDeck>
   }
 
