@@ -1,46 +1,69 @@
 import React, { Component } from 'react';
 
 import { Card, CardDeck } from 'react-bootstrap';
+import ProjectCard from './ProjectCard/ProjectCard';
+
+import api from 'api/api';
 
 import './Home.css';
-
-const cardStyle = {
-  minWidth: '333px', 
-  maxWidth: '333px',
-  minHeight: 'calc(20vh - 20px)',
-  maxHeight: 'calc(20vh - 20px)', 
-  boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-  border: 'none',
-};
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      rankings: [],
     };
   }
 
+  // Can we do this with events? 
+  // Currently rerenders all cards on rank choice
+  handleChoice = (key, rank) => {
+    const rankings = this.state.rankings;
+    const existingIndex = rankings.indexOf(key);
+    if (existingIndex > -1) delete rankings[existingIndex];
+    rankings[rank] = key;
+    this.setState({ rankings }, () => {
+      const newRanks = this.state.rankings;
+      newRanks.map((r, i) => ({ project: r, rank: i + 1}));
+      api.postRankings(newRanks);
+    });
+  }
+
+  getProject = i => {
+    const ranking = this.state.rankings[i];
+    if (ranking) {
+      const project = ranking.substring(0, ranking.lastIndexOf('#'));
+      const table = ranking.substring(ranking.lastIndexOf('#'), ranking.length);
+      return `Table ${table}: ${project}`;
+    } else {
+      return 'Undecided';
+    }
+  }
+
   renderCards = () => {
+    const { rankings } = this.state;
+
     const cards = [(
-      <Card style={cardStyle} key="doneCard">
+      <Card className="top-three" key="done-card">
         <Card.Body>
-          <Card.Title>Your top three</Card.Title>
-          <Card.Text>
-            1. {false || 'Undecided'} <br />
-            2. {false || 'Undecided'} <br />
-            3. {false || 'Undecided'}
-          </Card.Text>
+          <Card.Title as='h3'>Your top three</Card.Title>
+          <div>1. {this.getProject(0)}</div>
+          <div>2. {this.getProject(1)}</div>
+          <div>3. {this.getProject(2)}</div>
         </Card.Body>
       </Card>
     )];
     this.props.assignments.forEach(a => {
+      const project = a.substring(0, a.lastIndexOf('#'));
+      const table = a.substring(a.lastIndexOf('#'), a.length);
       cards.push(
-        <Card style={cardStyle} key={a}>
-          <Card.Body>
-            <Card.Title>{a}</Card.Title>
-          </Card.Body>
-        </Card>
+        <ProjectCard 
+          handleChoice={this.handleChoice}
+          rankings={this.state.rankings}
+          project={project} 
+          table={table} 
+          key={a}
+        />
       );
     });
     return <CardDeck>{cards}</CardDeck>
