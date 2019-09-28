@@ -1,78 +1,80 @@
 import React, { Component } from 'react';
-import './Home.css';
 
-import Table from './Table/Table';
+import { Card, CardDeck } from 'react-bootstrap';
+import ProjectCard from './ProjectCard/ProjectCard';
+
+import api from 'api/api';
+
+import './Home.css';
 
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.fileInput = React.createRef();
     this.state = {
-      error: '',
-      isReady: false,
-      tableData: '',
+      rankings: [],
     };
   }
 
-  // Read contents from uploaded file
-  handleUpload = (event) => {
-    event.preventDefault();
-    let tableData = '';
-    let error = '';
-    let file = event.target.files[0];
-    let reader = new FileReader();
-
-    // Force .csv extension
-    reader.onloadstart = event => {
-      if (file.name.split('.').pop() !== 'csv') {
-        error = 'Please upload a CSV file!';
-        reader.abort(); 
-      }
-    };
-
-    reader.onload = event => {
-      tableData = reader.result;
-    };
-
-    reader.onerror = event => {
-      error = reader.error.message;
-      reader.abort();
-    };
-
-    reader.onloadend = event => {
-      this.setState({
-        tableData,
-        error,
-      });
-    };
-
-    reader.readAsText(file);
-  };
-
-  // Acts as a buffer between file upload and table generation
-  handleSubmit = (event) => {
-    event.preventDefault();
-    let error = '';
-    
-    if (this.state.tableData === '') {
-      error = 'Please upload a non-empty file!';
-    }
-
-    this.setState({
-      error, 
-      isReady: error === '',
+  // Can we do this with events? 
+  // Currently rerenders all cards on rank choice
+  handleChoice = (key, rank) => {
+    const rankings = this.state.rankings;
+    const existingIndex = rankings.indexOf(key);
+    if (existingIndex > -1) delete rankings[existingIndex];
+    rankings[rank] = key;
+    this.setState({ rankings }, () => {
+      const newRanks = this.state.rankings;
+      newRanks.map((r, i) => ({ project: r, rank: i + 1}));
+      api.postRankings(newRanks);
     });
-  };
+  }
+
+  getProject = i => {
+    const ranking = this.state.rankings[i];
+    if (ranking) {
+      const project = ranking.substring(0, ranking.lastIndexOf('#'));
+      const table = ranking.substring(ranking.lastIndexOf('#'), ranking.length);
+      return `Table ${table}: ${project}`;
+    } else {
+      return 'Undecided';
+    }
+  }
+
+  renderCards = () => {
+    const { rankings } = this.state;
+
+    const cards = [(
+      <Card className="top-three" key="done-card">
+        <Card.Body>
+          <Card.Title as='h3'>Your top three</Card.Title>
+          <div>1. {this.getProject(0)}</div>
+          <div>2. {this.getProject(1)}</div>
+          <div>3. {this.getProject(2)}</div>
+        </Card.Body>
+      </Card>
+    )];
+    this.props.assignments.forEach(a => {
+      const project = a.substring(0, a.lastIndexOf('#'));
+      const table = a.substring(a.lastIndexOf('#'), a.length);
+      cards.push(
+        <ProjectCard 
+          handleChoice={this.handleChoice}
+          rankings={this.state.rankings}
+          project={project} 
+          table={table} 
+          key={a}
+        />
+      );
+    });
+    return <CardDeck>{cards}</CardDeck>
+  }
 
   render() {
     return (
       <div className="home">
-        <form className="form-file" onSubmit={this.handleSubmit}>
-          <input type="file" accept=".csv" onChange={this.handleUpload}/>
-          <input type="submit" value="Submit"/>
-        </form>
-        <p>{this.state.error}</p>
-        {this.state.isReady ? <Table data={this.state.tableData}/> : null}
+        <div className="gallery">
+          {this.renderCards()}
+        </div>
       </div>
     );
   }
