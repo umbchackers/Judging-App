@@ -21,7 +21,7 @@ class Home extends Component {
     const rankings = this.state.rankings;
     const existingIndex = rankings.indexOf(key);
     rankings[rank] = key;
-    if (existingIndex > -1) delete rankings[existingIndex];
+    if (existingIndex > -1) rankings.splice(existingIndex, 1);
     this.setState({ rankings }, () => {
       let newRanks = this.state.rankings;
       newRanks = newRanks.map((r, i) => ({ project: r, rank: i + 1}));

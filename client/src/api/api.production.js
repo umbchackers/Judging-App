@@ -1,13 +1,21 @@
-function getRequest(url) {
-  return fetch(url).then(res => res.json());
+let timeout = 0;
+
+async function getRequest(url) {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    Promise.resolve(fetch(url).then(res => res.json()));
+  }, 5000);
 }
 
-function postRequest(url, resource) {
-  return fetch(url, {
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(resource)
-  }).then(res => res.json());
+async function postRequest(url, resource) {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    fetch(url, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(resource),
+    }).then(res => res.json());
+  }, 5000);
 }
 
 const getAssignments = () => getRequest('/api/assignments');
