@@ -46,7 +46,7 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign(data, process.env.JWT_SECRET);
     res.cookie('access_token', token, { httpOnly: true });
   }
-  res.status(auth ? 200 : 400).send({ data });
+  res.status(auth ? 200 : 400).send({ user: data });
 });
 
 /** Remove the access_token from the browser's cookies */
