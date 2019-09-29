@@ -25,6 +25,12 @@ body .btn.btn-outline-primary:active {
   color: #007bff;
 }
 
+.btn-container {
+  flex: 1 0;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 .card {
   min-width: 333px !important; 
   max-width: 333px;
@@ -42,7 +48,6 @@ body .btn.btn-outline-primary:active {
 
 .top-three .card-body {
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
 }
