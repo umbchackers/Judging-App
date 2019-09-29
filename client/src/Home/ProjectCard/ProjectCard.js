@@ -14,8 +14,6 @@ const ProjectCard = ({
     return `${rankings[i] === project + table ? '' : 'outline-'}primary`;
   };
 
-  console.log(project + table);
-
   return (
     <Card>
       <Card.Body>

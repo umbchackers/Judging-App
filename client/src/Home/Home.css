@@ -7,6 +7,24 @@ body .btn-group, .btn-group-vertical {
   margin-top: 25px;
 }
 
+body .btn-group .btn:active {
+  outline: none;
+}
+
+body .btn-group .btn:focus {
+  outline: none;
+}
+
+body .btn.btn-outline-primary:focus {
+  background-color: white;
+  color: #007bff;
+}
+
+body .btn.btn-outline-primary:active {
+  background-color: white;
+  color: #007bff;
+}
+
 .card {
   min-width: 333px !important; 
   max-width: 333px;

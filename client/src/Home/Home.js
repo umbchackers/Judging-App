@@ -20,11 +20,11 @@ class Home extends Component {
   handleChoice = (key, rank) => {
     const rankings = this.state.rankings;
     const existingIndex = rankings.indexOf(key);
-    if (existingIndex > -1) delete rankings[existingIndex];
     rankings[rank] = key;
+    if (existingIndex > -1) delete rankings[existingIndex];
     this.setState({ rankings }, () => {
-      const newRanks = this.state.rankings;
-      newRanks.map((r, i) => ({ project: r, rank: i + 1}));
+      let newRanks = this.state.rankings;
+      newRanks = newRanks.map((r, i) => ({ project: r, rank: i + 1}));
       api.postRankings(newRanks);
     });
   }
@@ -41,8 +41,6 @@ class Home extends Component {
   }
 
   renderCards = () => {
-    const { rankings } = this.state;
-
     const cards = [(
       <Card className="top-three" key="done-card">
         <Card.Body>
