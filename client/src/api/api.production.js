@@ -1,3 +1,5 @@
+let timeout = 0;
+
 function getRequest(url) {
   return fetch(url).then(res => res.json());
 }

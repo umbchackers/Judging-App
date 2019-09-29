@@ -38,7 +38,6 @@ router.post('/rankings', async (req, res) => {
   let data;
   try {
     data = await spro.updateRankingsFor(user, rankings);
-    console.log(data);
   } catch (err) {
     data = err;
   }

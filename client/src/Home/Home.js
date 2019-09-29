@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Card, CardDeck } from 'react-bootstrap';
+import { Card, CardDeck, Button } from 'react-bootstrap';
 import ProjectCard from './ProjectCard/ProjectCard';
 
 import api from 'api/api';
@@ -11,7 +11,9 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rankings: [],
+      rankings: [null, null, null],
+      sentRankings: [],
+      submitDisabled: true,
     };
   }
 
@@ -21,12 +23,8 @@ class Home extends Component {
     const rankings = this.state.rankings;
     const existingIndex = rankings.indexOf(key);
     rankings[rank] = key;
-    if (existingIndex > -1) delete rankings[existingIndex];
-    this.setState({ rankings }, () => {
-      let newRanks = this.state.rankings;
-      newRanks = newRanks.map((r, i) => ({ project: r, rank: i + 1}));
-      api.postRankings(newRanks);
-    });
+    if (existingIndex > -1) rankings[existingIndex] = null;
+    this.setState({ rankings, submitDisabled: rankings.some(rank => rank === null)});
   }
 
   getProject = i => {
@@ -40,7 +38,20 @@ class Home extends Component {
     }
   }
 
+  handleSubmit = e => {
+    e.preventDefault();
+    let newRanks = [];
+      this.state.rankings.forEach((ranking, i) => {
+        ranking && newRanks.push({ project: ranking, rank: i + 1 });
+      });
+    api.postRankings(newRanks);
+    this.setState({ sentRankings: this.state.rankings });
+  }
+
   renderCards = () => {
+    const { submitDisabled, rankings } = this.state;
+    const nullNum = rankings.reduce((acc, val) => acc + (val ? 0 : 1), 0);
+
     const cards = [(
       <Card className="top-three" key="done-card">
         <Card.Body>
@@ -48,6 +59,15 @@ class Home extends Component {
           <div>1. {this.getProject(0)}</div>
           <div>2. {this.getProject(1)}</div>
           <div>3. {this.getProject(2)}</div>
+          <div className="btn-container">
+            <Button 
+              variant={submitDisabled ? 'secondary' : 'primary'} 
+              disabled={submitDisabled}
+              onClick={this.handleSubmit}
+            >
+              {submitDisabled ? 'Rank 3 projects' : 'Submit'}
+            </Button>
+          </div>
         </Card.Body>
       </Card>
     )];
