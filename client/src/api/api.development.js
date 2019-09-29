@@ -1,15 +1,14 @@
 const getAssignments = async () => {
   const projects = [];
   const n = 15;
-  for (let i = 0; i < n; i++) projects.push('Project ' + i);
+  for (let i = 0; i < n; i++) projects.push(`Projectasdasdaksdhaskdjhaskjhkjh${i} #${i}`);
   return projects;
 };
 
-const getUserInfo = async () => ({ user: { username: 'judgedreadd' } });
+const getUserInfo = async () => ({ });
 
-const postLogin = async (username, login) => ({ auth: true });
+const postLogin = async (username, login) => ({ user: { username } });
 
-// Unsure exactly what is returned from this POST. Will update when I get home today.
 const postRankings = async (rankings) => ({ });
 
 export  {
