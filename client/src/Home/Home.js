@@ -12,7 +12,6 @@ class Home extends Component {
     super(props);
     this.state = {
       rankings: [null, null, null],
-      sentRankings: [],
       submitDisabled: true,
     };
   }
@@ -41,10 +40,13 @@ class Home extends Component {
   handleSubmit = e => {
     e.preventDefault();
     let newRanks = [];
-      this.state.rankings.forEach((ranking, i) => {
-        ranking && newRanks.push({ project: ranking, rank: i + 1 });
-      });
-    api.postRankings(newRanks);
+    this.state.rankings.forEach((ranking, i) => {
+      ranking && newRanks.push({ project: ranking, rank: i + 1 });
+    });
+    api.postRankings(newRanks).then(data => {
+      if (data) alert('Thank you for submitting!');
+      else alert('Submit failed. Please see an organizer.');
+    });
     this.setState({ sentRankings: this.state.rankings });
   }
 
