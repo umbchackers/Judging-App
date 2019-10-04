@@ -34,10 +34,10 @@ router.get('/assignments', async (req, res) => {
 /** Post judge ranks to the scorecard sheet */
 router.post('/rankings', async (req, res) => {
   const rankings = req.body.rankings;
-  const user = req.decoded.username;
+  const username = req.decoded.username;
   let data;
   try {
-    data = await spro.updateRankingsFor(user, rankings);
+    data = await spro.updateRankingsFor(username, rankings);
   } catch (err) {
     data = err;
   }

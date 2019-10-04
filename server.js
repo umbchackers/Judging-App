@@ -1,6 +1,6 @@
-if (process.env.NODE_ENV != 'production') {
+// if (process.env.NODE_ENV != 'production') {
   require('dotenv').config();
-}
+// }
 const jwt = require('jsonwebtoken');
 const path = require('path');
 
@@ -27,13 +27,27 @@ app.use('/api', api);
 /** Return user object associated with signed JWT */
 app.get('/user/me', (req, res) => {
   const token = req.cookies.access_token;
-  let user;
+  let data;
   try {
-    user = jwt.verify(token, process.env.JWT_SECRET);
+    data = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
-    user = null;
+    data = null;
   }
-  res.status(200).send({ user });
+  res.status(200).send({ ...data });
+});
+
+app.post('/user/me', (req, res) => {
+  const token = req.cookies.access_token;
+  let data;
+  try {
+    data = jwt.verify(token, process.env.JWT_SECRET);
+    data = { ...data, ...req.body };
+    const newToken = jwt.sign(data, process.env.JWT_SECRET);
+    res.cookie('access_token', newToken, { httpOnly: true });
+  } catch (err) {
+    data = null;
+  }
+  res.status(200).send({ ...data });
 });
 
 /** Sign a JWT and send it as a cookie to the browser */
@@ -46,7 +60,7 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign(data, process.env.JWT_SECRET);
     res.cookie('access_token', token, { httpOnly: true });
   }
-  res.status(auth ? 200 : 400).send({ user: data });
+  res.status(auth ? 200 : 400).send({ ...data });
 });
 
 /** Remove the access_token from the browser's cookies */
