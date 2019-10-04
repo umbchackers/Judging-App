@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Form, Button } from 'react-bootstrap';
 
@@ -6,6 +6,7 @@ import './Login.css';
 
 const Login = ({ handleAuth }) => {
   const username = useRef(''), password = useRef('');
+  const [doShowPassword, setDoShowPassword] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -27,11 +28,17 @@ const Login = ({ handleAuth }) => {
           <Form.Label>Password</Form.Label>
           <Form.Control 
             ref={password}
-            type="password" 
+            type={doShowPassword ? "text" : "password"} 
             placeholder="Enter password" 
           />
+          <Form.Text 
+            className="text-muted text-show"
+            onClick={() => setDoShowPassword(!doShowPassword)}
+          >
+            {doShowPassword ? 'Hide' : 'Show'} Password
+          </Form.Text>
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button className="btn-submit" variant="primary" type="submit">
           Log in
         </Button>
       </Form>

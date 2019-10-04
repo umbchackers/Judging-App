@@ -8,7 +8,11 @@
   width: 100%;
 }
 
-.login form button {
+body .text-show {
+  float: right;
+  cursor: pointer;
+}
+
+.login .btn-submit {
   margin-top: 15px;
-  justify-self: center;
 }
