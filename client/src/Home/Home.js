@@ -10,7 +10,7 @@ import './Home.css';
 class Home extends Component {
   constructor(props) {
     super(props);
-    const { rankings } = props.data;
+    const { rankings = [] } = props.data;
     this.state = {
       rankings: rankings || [null, null, null],
       submitDisabled: !(rankings[0] && rankings[1] && rankings[2]),
