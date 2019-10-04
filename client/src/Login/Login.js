@@ -35,7 +35,7 @@ const Login = ({ handleAuth }) => {
             className="text-muted text-show"
             onClick={() => setDoShowPassword(!doShowPassword)}
           >
-            {doShowPassword ? 'Hide' : 'Show'} Password
+            {doShowPassword ? 'Hide' : 'Show'} password
           </Form.Text>
         </Form.Group>
         <Button className="btn-submit" variant="primary" type="submit">
