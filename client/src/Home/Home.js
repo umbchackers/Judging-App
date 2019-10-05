@@ -58,9 +58,11 @@ class Home extends Component {
       <Card className="top-three" key="done-card">
         <Card.Body>
           <Card.Title as='h3'>Your top three</Card.Title>
-          <div>1. {this.getProject(0)}</div>
-          <div>2. {this.getProject(1)}</div>
-          <div>3. {this.getProject(2)}</div>
+          <ol>
+            <li>{this.getProject(0)}</li>
+            <li>{this.getProject(1)}</li>
+            <li>{this.getProject(2)}</li>
+          </ol>
           <div className="btn-container">
             <Button 
               variant={submitDisabled ? 'secondary' : 'primary'} 
