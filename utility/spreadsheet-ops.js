@@ -161,7 +161,11 @@ async function getAssignmentsFor(user) {
   stop = start - 1 === users.length ? '' : start;
   while (stop !== '' && users[stop] === '') stop++;
   return getValues(`${ASSIGNMENTS}!B${start}:B${stop}`)
-    .then(data => data.sort());
+    .then(data => data.sort((a, b) => {
+      const t1 = a.substring(a.lastIndexOf('#') + 1, a.length);
+      const t2 = b.substring(b.lastIndexOf('#') + 1, b.length);
+      return t1 - t2;
+    }));
 }
 
 async function updateRankingsFor(user, rankings) {
