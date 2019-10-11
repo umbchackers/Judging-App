@@ -10,20 +10,11 @@ import './Home.css';
 class Home extends Component {
   constructor(props) {
     super(props);
+    const { rankings = [] } = props.data;
     this.state = {
-      rankings: [null, null, null],
-      submitDisabled: true,
+      rankings: rankings || [null, null, null],
+      submitDisabled: !(rankings[0] && rankings[1] && rankings[2]),
     };
-  }
-
-  // Can we do this with events? 
-  // Currently rerenders all cards on rank choice
-  handleChoice = (key, rank) => {
-    const rankings = this.state.rankings;
-    const existingIndex = rankings.indexOf(key);
-    rankings[rank] = key;
-    if (existingIndex > -1) rankings[existingIndex] = null;
-    this.setState({ rankings, submitDisabled: rankings.some(rank => rank === null)});
   }
 
   getProject = i => {
@@ -37,13 +28,32 @@ class Home extends Component {
     }
   }
 
+  formatRankingsBackend = rankings => {
+    let newRankings = [];
+    rankings.forEach((ranking, i) => {
+      ranking && newRankings.push({ project: ranking, rank: i + 1 });
+    });
+    return newRankings;
+  }
+
+  // Can we do this with events? 
+  // Currently rerenders all cards on rank choice
+  handleChoice = (key, rank) => {
+    const rankings = this.state.rankings;
+    const existingIndex = rankings.indexOf(key);
+    rankings[rank] = key;
+    if (existingIndex > -1) rankings[existingIndex] = null;
+    api.postUserInfo({ rankings });
+    this.setState({ 
+      rankings, 
+      submitDisabled: rankings.some(rank => rank === null),
+    });
+  }
+
   handleSubmit = e => {
     e.preventDefault();
-    let newRanks = [];
-    this.state.rankings.forEach((ranking, i) => {
-      ranking && newRanks.push({ project: ranking, rank: i + 1 });
-    });
-    api.postRankings(newRanks).then(data => {
+    const rankings = this.formatRankingsBackend(this.state.rankings);
+    api.postRankings(rankings).then(data => {
       if (data) alert('Thank you for submitting!');
       else alert('Submit failed. Please see an organizer.');
     });
@@ -51,8 +61,7 @@ class Home extends Component {
   }
 
   renderCards = () => {
-    const { submitDisabled, rankings } = this.state;
-    const nullNum = rankings.reduce((acc, val) => acc + (val ? 0 : 1), 0);
+    const { submitDisabled } = this.state;
 
     const cards = [(
       <Card className="top-three" key="done-card">

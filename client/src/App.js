@@ -38,7 +38,7 @@ class App extends Component {
   }
 
   getAssignments = data => {
-    this.setState({ data, isLoading: !!data.user, isAuthed: !!data.user }, () => {
+    this.setState({ data, isLoading: !!data.username, isAuthed: !!data.username }, () => {
       if (this.state.isAuthed) {
         api.getAssignments().then(assignments => {
           this.setState({ assignments, isLoading: false });
@@ -48,14 +48,19 @@ class App extends Component {
   }
 
   render() {
-    const { isLoading, isAuthed, assignments } = this.state;
+    const { 
+      isLoading, 
+      isAuthed, 
+      assignments, 
+      data, 
+    } = this.state;
 
     if (isLoading) return Loading();
 
     return (
       <div className="app">
         {isAuthed ? (
-          <Home assignments={assignments} />
+          <Home data={data} assignments={assignments} />
         ) : (
           <Login handleAuth={this.handleAuth} />
         )}
